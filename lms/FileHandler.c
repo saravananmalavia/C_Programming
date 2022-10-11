@@ -1,4 +1,7 @@
 
+int getTotalBookCount();
+int getLastBookId();
+
 int writeBook(book *bookObj)
 {
 	FILE *fp = NULL;
@@ -129,41 +132,89 @@ book* getBook(int id)
     }
 }
 
-
-
-//book* getAllBooks()
-void getAllBooks(int totalBookcount)
+book* getAllBooks()
 {
     FILE *fp = NULL;
     fp = fopen(lmsBookData,"rb");
     book *book_to_find = NULL;
+
+    int totalBookcount = getTotalBookCount();
     
-     //book *books = malloc(sizeof(book) * totalBookcount);
-     book *books[totalBookcount];
-    
-     if(fp != NULL)
-     {
+    book *books = (book*) malloc(sizeof(book) * totalBookcount);
+     
+    if(fp != NULL)
+    {
      
        book_to_find = (book*) malloc(sizeof(book));
 
-       printf("\n\t\t\t\t\tBook Details \t\t\t\t\n");
-       printf("\n***********************************************************************************\n");
-
        for(int i=0;i<totalBookcount;i++)
+       {      
+                fread(book_to_find,sizeof(book),1,fp);
 
-        //while(fread(book_to_find,sizeof(book),1,fp))
-        {       fread(book_to_find,sizeof(book),1,fp);
-                books[i] = book_to_find;
-                 printf("\nBook_Id : %d\t\tBook_name : %s\t\tBook_Author: %s",books[i]->book_id,books[i]->book_name,books[i]->author_name);
-                 
+                books[i].book_id = book_to_find->book_id;
+                strcpy(books[i].book_name, book_to_find->book_name);
+                strcpy(books[i].author_name, book_to_find->author_name);
+ 
         }
-        printf("\n***********************************************************************************\n");
-
-   
-        fclose(fp);
-        //return books;
+    
+    fclose(fp);
+        
     }
+
+    return books;
 }
+
+
+
+// To get total no of books in the library
+
+int getTotalBookCount()
+{
+    int count = 0;
+    FILE *fp = NULL;
+    fp = fopen(lmsBookData,"rb");
+    book *book_to_find = NULL;
+    if(fp != NULL)
+    {
+     
+       book_to_find = (book*) malloc(sizeof(book));
+
+        while(fread(book_to_find,sizeof(book),1,fp))
+        {
+                count ++;
+        }
+
+         fclose(fp);
+       }
+
+       return count;
+
+}
+
+
+int getLastBookId()
+{
+    int lastBookId = 0;
+    FILE *fp = NULL;
+    fp = fopen(lmsBookData,"rb");
+    book *book_to_find = NULL;
+    if(fp != NULL)
+    {
+     
+       book_to_find = (book*) malloc(sizeof(book));
+
+        while(fread(book_to_find,sizeof(book),1,fp))
+        {
+                lastBookId = book_to_find->book_id;
+        }
+
+         fclose(fp);
+       }
+
+       return lastBookId;
+
+}
+
 
 
 

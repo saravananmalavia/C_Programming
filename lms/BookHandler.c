@@ -4,6 +4,7 @@
 #include "Helper.c"
 
 int getTotalBookCount();
+int getLastBookId();
 book* searchBook();
 
 
@@ -24,7 +25,7 @@ int addBook()
 		book *newBook = NULL;
 		newBook = malloc(sizeof(book));
 
-         bookIdGenerator = getTotalBookCount();
+         bookIdGenerator = getLastBookId();
 
 		newBook->book_id = ++bookIdGenerator ;
 		strcpy(newBook->book_name, bookName);
@@ -52,12 +53,22 @@ book* searchBook()
     
 }
 
-// To search the details of  particular all the book in the library
+// To view the details of  particular all the book in the library
 
 void viewAllBooks()
 {
-    int totalBookCount = getTotalBookCount();
-    getAllBooks(totalBookCount);
+    book *books;
+    books = getAllBooks();
+    int totalBookcount = getTotalBookCount();
+
+
+    printf("\n\t\t\t\t\tBook Details \t\t\t\t\n");
+    printf("\n***********************************************************************************\n");
+    for(int i=0;i<totalBookcount;i++){
+         printf("\nBook_Id : %d\t\tBook_name : %s\t\tBook_Author: %s",books[i].book_id, books[i].book_name, books[i].author_name);
+    }
+    printf("\n***********************************************************************************\n");
+
     
 }
 
@@ -97,7 +108,6 @@ int editBook()
             free(book_to_edit);
      
         }
-        
               
         return result;
 
@@ -129,29 +139,5 @@ int removeBook()
 }
 
 
-// To get total no of books in the library
-
-int getTotalBookCount()
-{
-    int count = 0;
-    FILE *fp = NULL;
-    fp = fopen(lmsBookData,"rb");
-    book *book_to_find = NULL;
-    if(fp != NULL)
-    {
-     
-       book_to_find = (book*) malloc(sizeof(book));
-
-        while(fread(book_to_find,sizeof(book),1,fp))
-        {
-                count ++;
-        }
-
-         fclose(fp);
-       }
-
-       return count;
-
-}
 
 
